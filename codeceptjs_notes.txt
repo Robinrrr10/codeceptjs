@@ -1,0 +1,290 @@
+codecept tutorial
+-----------------
+-----------------
+-----------------
+
+It is a automation tool for web and mobile.
+
+
+Link:
+https://www.youtube.com/watch?v=tvTQTxShx28&list=PLdBaEcWYGDLJbFJvZkO7fPSm_ZkA6FtGz&index=1
+
+
+
+Tutorial 1: Introduction, setup, Writing first test, creating codecept project using puppeteer //This is for first two video for the above playlist
+----------------------------------------------------
+Official web address: https://codecept.io/
+We can see advantages in above official page.
+Has advantages like readable, same code for internal puppeteer, webdriver, appium etc, interactive debugging, can give any locator, easy for page object model, 
+can use for web and mobile, cucumber like bdd, has beautiful and can integrate with allure report, manage test data and clean up with api, parallel execution, multisession(different browser or different device), reduce flackiness using retry option
+
+Pre Setup:
+1. Required node and npm to be installed. Download installer from official node site. https://nodejs.org/en/download/ . And install it. Check the version using the command node -v, npm -v
+2. Use any IDE. VS code is preffered for javascript.
+3. Javascript. Should know basics of javascript language.
+
+
+To create fresh project:
+1.Create a folder for project. Give folder name as project name. 
+mkdir qaautomation
+2. Go inside the folder
+cd qaautomation
+3. Use below command to create npm project
+npm init 
+or
+npm init -y
+4. Add below packages for installing codecept
+npm install codeceptjs puppeteer --save-dev
+5. Use below command to make this npm project to codecept project. Give required input when it asks details
+npx codeceptjs init
+//it will create all required files. codecept.conf.ts has all configuration. Here we can give web url, test folder, output folders and more config etc.
+//Select Puppeteer when asks for "What helpers do you want to use?"
+6. Use below command to run the test.
+npx codeceptjs run
+or
+npx codeceptjs run --steps 
+//--steps will show each steps while running.
+
+
+All configuration will be saved in codecept.conf.js
+
+Below is the codecept.conf.js file after creation:
+
+const { setHeadlessWhen, setCommonPlugins } = require('@codeceptjs/configure');
+setHeadlessWhen(process.env.HEADLESS);
+setCommonPlugins();
+exports.config = {
+  tests: './*_test.js',
+  output: './output',
+  helpers: {
+    Puppeteer: {
+      url: 'https://opensource-demo.orangehrmlive.com',  //Here you can give the web link
+      show: true,                     //here we can give true or false to show the browser
+      windowSize: '1200x900'
+    }
+  },
+  include: {
+    I: './steps_file.js'
+  },
+  name: 'tutorial1FreshProject'
+}
+
+
+
+Below is the sample test:
+
+Feature('login');
+
+Scenario('login with valid credential and verify',  ({ I }) => {
+    I.amOnPage('/');
+    I.wait(5);
+    I.seeElement("//*[@id='app']/div[1]/div/div[1]/div/div[2]/h5");
+    I.fillField('//input[@name="username"]', "Admin");
+    I.fillField('//input[@name="password"]', "admin123");
+    I.click('//button[@type="submit"]');
+    I.wait(5);
+});
+
+
+
+----
+
+
+
+Tutorial 2: Codecept js with Webdriverio
+--------------------
+webdriverio is good for cross browser testing
+It uses selenium web driver
+
+Use below command to create codecept project using webdriverio
+
+create a folder for the project. Go inside the folder and give below command
+npm init -y          //To make the current directory as npm project
+npm install codeceptjs webdriverio --save-dev           //To add codecept and webdriverio dependencies
+npx codeceptjs init            //To make the current project to codecept project 
+//Select WebDriver when asks for "What helpers do you want to use?"
+npm install @wdio/selenium-standalone-service --save-dev       // We need selenium standalone service for webdriverio      //To install the selenium-standalone-service. This is needed only when we create codecept with webdriverio
+
+
+Add below plugin in codecept.conf.js  //It is needed because, then only it will auto start the selenium standalone service when running.
+plugins: {
+    wdio: {
+      enabled: true,
+      services: ['selenium-standalone']
+    }
+  }
+
+
+
+Below is the codecept.conf.js file after creation:
+
+const { setHeadlessWhen, setCommonPlugins } = require('@codeceptjs/configure');
+setHeadlessWhen(process.env.HEADLESS);
+setCommonPlugins();
+exports.config = {
+  tests: './*_test.js',
+  output: './output',
+  helpers: {
+    WebDriver: {
+      url: 'https://opensource-demo.orangehrmlive.com',
+      browser: 'chrome'       //Here we can change the browser
+    }
+  },
+  include: {
+    I: './steps_file.js'
+  },
+  name: 'tutorial2FreshCodeCeptWithWebDriverIo',
+  plugins: {
+    wdio: {              //This is plugin is used to start the selenium-standalone service automatically.
+      enabled: true,
+      services: ['selenium-standalone']
+    }
+  }
+}
+
+
+Test case file remain same as above.
+
+
+----
+
+
+Tutorial 3: Codecept with playwriter
+------------------------------------
+Playwright is new driver developed by microsoft.
+Its a node library which will be used to automate chromium(chrome and edge), webkit(safari) and firefox browsers with single api
+Its good for cross browser testing
+build simular to puppeteer
+
+
+Use below command to create codecept project using webdriverio
+
+create a folder for the project. Go inside the folder and give below command
+npm init -y          //To make the current directory as npm project
+npm install codeceptjs playwright --save-dev           //To add the codecept and playwright dependencies
+npx codeceptjs init            //To make the current project to codecept project 
+
+Add the test and run using below command
+npx codeceptjs run.
+
+
+codecept.conf.js file looks like below after initialising the project
+
+const { setHeadlessWhen, setCommonPlugins } = require('@codeceptjs/configure');
+setHeadlessWhen(process.env.HEADLESS);
+setCommonPlugins();
+exports.config = {
+  tests: './*_test.js',
+  output: './output',
+  helpers: {
+    Playwright: {
+      url: 'https://opensource-demo.orangehrmlive.com',
+      show: true,
+      browser: 'chromium'      //Here we can change the browser Eg: firefox or chromium or webkit
+    }
+  },
+  include: {
+    I: './steps_file.js'
+  },
+  name: 'tutorial3FreshCodeCeptWithPlaywright'
+}
+
+
+------
+
+
+Tutorial 4: Writing test cases - opening webpage, locating element, fill fields, click elements, assertion, grab values, select option, smart wait etc
+----------------------------------
+
+For going to the link we can use amOnPage function=
+I.amOnPage function will be used to opening the webpage, navigation using url or opening web using link
+I.amOnPage(/) - This is for opening the web page. It will read the url form codecept.conf.js file
+I.amOnPage(/contact) - This is open navigating to page using the end point. It will take the base url from codecept.conf.js and append with this value Eg: https://kns.com/contact
+I.amOnPage(https://google.com/con?q=hai) - This will override the value in codecept.conf.js. It will directly opens the given link
+
+
+
+For giving the locator in function,
+We can directly give the xpath
+We can directly give the css selector
+For giving the ide, we need to give #idname
+
+
+
+fillField function is used to give the text in the element
+I.fillField('//input[@name="username"', "test@gmail.com")
+I.fillField('#pass', "test@gmail.com")
+
+
+
+click function can be used to click the button
+I.click('//button[@type="submit"]')
+
+
+see and dontSee function can be used to assert the visibile and not visible element
+I.see("Login") - assertion to check whether the text is visibile or not
+I.dontSee("Login") - assertion to check whether the text is not visibile
+
+
+
+wait function is used to give the wail
+I.wait(2) - this will wait for 2 sec
+
+
+
+grabTextFrom function can be used to get the text of the element
+I.grabTextFrom('//div/span')
+IMPORTANT:
+grabTextFrom should be used only with await. Also that function should be async
+Eg:
+Scenario('login with valid credential and verify',  async({ I }) => {  //async should be used before the method
+	let val = await I.grabTextFrom('//div/span');   //await should be used before grabTextFrom
+	console.log(val)
+}
+
+
+
+selectOption function can be used to select the option in the list
+selectOption('give the element', 'give the visible text here')
+Eg:
+I.selectOption('//div/li', "India")
+
+
+waitFor is the smart wait
+waitForText is the smart wait till the element present. we will give the max wait time as well. if the elemnt is visible the quickly it move to next step
+waitForText('give the element here', maximum waiting sex)
+Eg:
+I.waitForText('Login', 20) - Here it will wait till the Login text is visible. Maximum it will wait till 20 sec.
+
+
+
+
+We can add multiple Scenario in each test file. Meaning multiple tests in each file.
+We can point the test file in codecept.conf.js Eg: tests: './*Tests.js'
+
+
+
+-----
+
+
+
+
+
+
+
+
+Notes:
+------
+
+We can add multiple Scenario in each test file. Meaning multiple tests in each file.
+We can point the test file in codecept.conf.js Eg: tests: './*Tests.js'
+
+npx codeceptjs run --steps    //This will print steps while running
+npx codeceptjs run --grep 'give scenario name'     //This to run the single test
+
+
+
+
+
+
+
