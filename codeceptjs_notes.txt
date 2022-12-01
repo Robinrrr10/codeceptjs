@@ -267,6 +267,57 @@ We can point the test file in codecept.conf.js Eg: tests: './*Tests.js'
 -----
 
 
+Tutorial 5: Run Options - Run filename, run --steps, run --grep, run --multiple, --multiple Browser, Run-workers, Run --debug, Run --verbose
+--------------------
+
+npx codeceptjs run   //This is to run all the tests
+npx codeceptjs run testfilename.js      //This is to run tests available in the given file
+npx codeceptjs run testfilename.js --steps   // --steps is to to print the steps while running
+npx codeceptjs run --grep 'scenario name'     // --grep 'name of scenario'    This is to run particular test(scenario)
+
+
+Add below line in codecept.conf.js to run the test parallelly
+multiple: {
+	parallel: {
+		chunks: 2   //This is for running the test parallelly with 2 threads
+	}
+}
+
+npm codeceptjs run-multiple --all  //Run on multiple sessions       //It split the test to multiple browser  //It will split based on test files
+
+
+we can give different browser also like below
+
+multiple: {
+	parallel: {
+		chunks: 2,   //This is for running the test parallelly with 2 threads
+		browsers: ["chrome", "firefox"]   //can give multipe browser
+	}
+}
+
+npm codeceptjs run-multiple --all   //Now as per above, chrome and firefox will launch with each 2 instances. Totally 4 instances. And the test will be splitted 
+
+
+npm codeceptjs run-workers 3   // 3 session will be running. and test cases will be splitted to 3 sessions
+worker split the thread by test cases. not by test file      //It will split based on test cases
+
+
+run-multiple will pick the file and run in one browser(Split based on file). run-worker will pick the tes case and run in one browser(Split based on test)
+
+
+
+npx codeceptjs run --debug         // --debug will give high level debug logs. It will give more information running or failing
+
+npx codeceptjs run --verbose       // --verbose will give more and more details. including internal logs. If we are unable to find in debug mode then we can run in verbose 
+
+
+
+
+
+
+------
+
+
 
 
 
