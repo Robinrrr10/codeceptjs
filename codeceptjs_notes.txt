@@ -142,6 +142,10 @@ exports.config = {
   }
 }
 
+Note: 
+If you face any issue, use "^7.26.0" for @wdio/selenium-standalone-service Eg: "@wdio/selenium-standalone-service": "^7.26.0"
+and "^7.27.0" for webdriverio in dev-dependencies in package.json Eg: "webdriverio": "^7.27.0"
+
 
 Test case file remain same as above.
 
