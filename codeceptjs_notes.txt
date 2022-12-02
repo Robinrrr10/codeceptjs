@@ -322,6 +322,132 @@ npx codeceptjs run --verbose       // --verbose will give more and more details.
 ------
 
 
+Tutorial 6: Report - cli, xml - mocha junit report, html - mochawesome report, step by step report and allure
+---------------------------
+We have below types of report
+cli
+xml(mocha junit report)
+html(mochawesome report)
+step by step
+allure
+
+
+cli:
+cli - is the command line report when we run using the command like below
+npx codeceptjs run --steps   //When using --steps it will print the steps. its the cli report
+
+
+xml(mocha junit report):
+Use below command to install moch junit report dependencies
+npm i mocha-junit-reporter --save-dev
+After installing we should see mocha: {} in codecept.conf.js
+
+add reporterOptions in mocha like below
+mocha: {
+	reporterOptions: {
+		mochaFile: "output/result.xml"           //it will generate the report xml file in given folder
+	}
+}
+
+We can use below command to run the test and generate xml report.
+npx codeceptjs run --reporter mocha-junit-reporter
+//This will generate report in given folder Eg: output/result.xml
+//Its not the html. its xml. this xml report will help in cicd
+
+
+
+html (mochawesome report):
+Use below command to install its dependencies
+npm i mochawesome --save-dev
+
+add reporterOptions in mocha like below
+mocha: {
+	reporterOptions: {
+		mochaFile: "output/result.xml",           //it will generate the report xml file in given folder
+		reportDir: "output"             //folder where the html report should be generated
+	}
+}
+
+Use below command to run the test and generate html report
+npx codeceptjs run --reporter mochawesome
+//this will generate the html report after test run. We can see this html file in given output folder
+
+
+
+step by step report:
+step by step report will capture screenshot in each step. if success it will delete. if not success it will keep the screenshot
+to configure, add stepByStepReport inside plugins in codecept.conf.js like below
+stepByStepReport: {
+	enabled: true,              //to enable or disable step by step report. It will capture screenshot for each step
+	deleteSuccessful: false     //Whether we wanted to delete the screenshot if the successfull. If we give true, it will delete the screenshot of successfull step and capture only for failed one. If we give false, it wont delete for both success and failure steps
+}
+
+as we are giving and enabling in plugins, it will capture the screenshot automatically after each step
+npx codeceptjs run   //if we give in plugin, just run command is enough to run the test and take step by step report which is screenshot
+//screenshots will be saved in output folder. It will create folder for each test and save all screenshot. 
+We can open the folder of each test and open index.html and see each step and its screenshot
+
+
+
+allure report:
+To add allure report install below dependencies
+npm install -g allure-commandline --save-dev  //If allure is already installed in you system, it will give error with exists
+to configure, allure inside plugins in codecept.conf.js like below
+allure: {
+	enabled: true
+}
+
+npx codeceptjs run  //Use this command to run the test. and it will generate allure result in xml/json in output folder.
+Give below command open allure report in browser
+allure serve output  //this will open the allure report in browser
+
+We can include screenshot of step by step in allure report. To configure give below in plugins.
+
+plugins: {
+stepByStepReport: {
+	enabled: true,
+	screenshotsForAllureReport: true
+  },
+allure: {
+	enabled: true
+  }
+}
+
+now run the test and //npx codeceptjs run
+generate allure report //allure serve output
+Now we can see the screenshots in allure report
+
+
+
+
+
+
+
+-------
+
+
+
+
+Plugins: plugins and its usage. this plugins can be added in codecept.conf.js if required
+-------
+retryFailedStep - this is for retrying failed step
+screenshotOnFail - this is to take screenshot on failure
+stepByStepReport - this is to take screenshot on each step
+
+Eg:
+plugins: {
+	retryFailedStep: {
+		enabled: true
+	},
+	screenshotOnFail: {
+		enabled: true
+	},
+	stepByStepReport: {
+		enabled: true
+	}
+}
+
+
 
 
 
