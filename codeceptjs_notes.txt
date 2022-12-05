@@ -418,12 +418,169 @@ generate allure report //allure serve output
 Now we can see the screenshots in allure report
 
 
+--------
+
+Tutorial 7: Codeceptjs with BDD - Initiate BDD, Feature file, Scenario, Given when then, step files, Background, Parameterisation, Tables, Tags, Configuration
+-----------------------------------------
+BDD - Behvariour Driver Development.
+Test cases are in simple english and it will be easy to read.
+Test cases are written in Given, When and tThen format
+
+Feature file and Step file will be added in each of its folder
 
 
+To initiate codecept with BDD give below command
+npx codeceptjs gherkin:init
+//It willl initiate BDD
+//Now we can find below and few more in codecept.conf.js
+gherkin: {
+    features: './features/*.feature',
+    steps: ['./step_definitions/steps.js']
+  }
+It will add features folder which has feature files
+It will add step_definitions folder which has step files
+It will have sample feature and step file
+
+
+Feature is the file where we will write write the test cases.
+Feature file extension should be .feature
+Feature meaning feature. Eg: Login feature, Product details etc
+Feature will have multiple scenarios
+Scenario is like test cases. Eg: login with valid credential and validate
+Step is the file which will used to map the feature.
+It will mapped by using given sentences in both the places.
+Codecept will automatically map the scentences in feature to sentences in the step file
+In step file we will use Given, When, Then functions which will be help for mapping. 
+For And in feature file we can also give Then in step
+
+
+To run the tests, use below command
+npx codeceptjs run --features
+//This command will be used to run the tests in feature files
+
+
+We can add multipe tests cases by adding multiple scenarios.
+
+We can pass the value from feature I below
+Eg:
+	Then I should see "Ram"
+
+The value will be read in step file like below
+Eg:
+	Then('I should see "{word}"', (username) => {    //It will get in the  datatype word and pass to username. It can be word or int or other datatype. other than given datatypee in bbb. dont use other.
+		console.log(username);       //I can use the username here which I get from feature which is Ram
+		I.see(username);
+	})
+
+{word} - this is just accept only one word. we cannot pass more than one word or sentences.
+ \"([^\\"]*)\" - This will accept more words or sentences. 
+ Eg: 
+ Then(/I should see the \"([^\\"]*)\" texts/, (sent) => {
+ 	I.see(sent);
+ })
+ {int} - this is accepting the number
+
+
+
+Use below command to create BDD project
+Create the folder with project name. Eg: mkdir WebAutomation
+Go inside the folder. Eg: cd WebAutomation
+Give below command to make this project folder as npm project
+npm init -y
+Use below command to download dependencies
+npm install codeceptjs playwright --save     //instead of playwright we can use other helper also. Eg: puppeteer or webdriverio etc
+Use below command to make the project as codecept project
+npx codeceptjs init
+Use below command to make the codeceptjs project with bdd
+npx codeceptjs gherkin:init       //It will create features folder and step_definitions folder which is required for bdd, with some sample files
+Now add your/modify your feature file and step file
+Now run the tests using below command
+npx codeceptjs run --features
+
+
+
+
+Background: Login functionality               //Background will be added to feature file when we wanted to do set of steps before each tests. This is simular to BeforeMethod. so that we dont wanted to add repeating steps to each and every tests. Eg: login. Background also we will mension Given, when and then etc
+	Given: I have valid credential
+	Then I should able to login
+	AND I should come to home page            //AND can be used instead of multiple Then. But in step file we will mension as Then() only
+
+
+
+Tables:
+we can pass entire table in one shot
+or
+we can pass one parameter from a table
+
+To pass table from feature file, we can give like below. It will start with pipe symbol. It wont consider spaces between pipe and words in table
+Eg:
+Then I should see employee details
+| id   | name  | email         |
+| 5001 | Kumar | kum@gmail.com |
+| 5002 | Raju  | raj@gmail.com |
+
+
+To get entire table use like below
+Then('I should see employee details', (table) => {
+	for(const record in table.rows) {
+		if(record<1){
+			continue;
+		}
+		const cellValue = table.rows[record].cells;
+		const id = cellValue[0].value;
+		const name = cellValue[1].value;
+		const email = cellValue[2].value;
+		I.see(name)
+		I.say(email)   // I.say is just to print the value
+		I.say(id)
+	}
+})
+
+
+
+
+Tags - Tags are annotation to group the test. We can use annotation symbol to add the tag
+Tagname should be given above scenario
+Eg:
+@MyTest
+
+To run the tag, use command like below
+npx codeceptjs run --grep '@MyTest'
+npx codeceptjs run --features --grep '@MyTest'
+//This will run the scenario which has tag name as MyTest
+
+
+
+Scenario level parameter 
+It is pass the value of parameter in each iteration
+
+Scenario Outline: Login to web and using parameterisation  //this entire scenario will run for the given number of times as per examples
+	Given I go to PIM
+	Then I should see "<email>"                     //every run of scenario will pass the values of each two rows one by one. In first run of this scenario email will be kum@gmail.com, then the next run of the scenario it will be raj@gmail.com         
+	Examples:
+		| id   | name  | email         |
+		| 5001 | Kumar | kum@gmail.com |
+		| 5002 | Raju  | raj@gmail.com |
+
+
+
+
+Configuration:
+In codecept.conf.js we can find the path configuration of feature and  step file like below. If need we can change this.
+gherkin: {
+	features: './features/*.feature',
+	steps: ['./step_definitions/steps.js']     //This is comma seperator. we can add multiple like Eg: steps: ['./step_definitions/steps.js', './step_definitions/tablesteps.js']
+}
 
 
 
 -------
+
+Below you can find the documentation
+https://codecept.io/basics
+
+
+
 
 
 
